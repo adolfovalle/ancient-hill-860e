@@ -1,7 +1,7 @@
 export default {
   async fetch(request, env) {
     const inputs = {
-      prompt: "cyberpunk cat",
+      prompt: "ninja samurai assassins creed protagonist, unreal engine 5, high quality, detailed, 4k",
     };
 
     const response = await env.AI.run(

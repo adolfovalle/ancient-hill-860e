@@ -4,17 +4,16 @@ export default {
       prompt: "ninja samurai assassins creed protagonist, unreal engine 5, high quality, detailed, 4k",
     };
 
-    const imageResponse = await env.AI.run(
+    // La respuesta ya es un Uint8Array
+    const imageBytes = await env.AI.run(
       "@cf/stabilityai/stable-diffusion-xl-base-1.0",
       inputs,
     );
 
-    // Convertir la imagen a base64 usando solo APIs web estándar
-    const bytes = new Uint8Array(await imageResponse.arrayBuffer());
-    const base64String = Array.from(bytes)
-      .map(byte => String.fromCharCode(byte))
-      .join('');
-    const base64Encoded = self.btoa(base64String);
+    // Convertir directamente los bytes a base64
+    let binary = '';
+    imageBytes.forEach(byte => binary += String.fromCharCode(byte));
+    const base64 = globalThis.btoa(binary);
 
     const html = `
       <!DOCTYPE html>
@@ -83,7 +82,6 @@ export default {
                   font-size: 24px;
               }
               
-              /* Iconos de redes sociales usando Unicode */
               .icon {
                   display: inline-block;
                   width: 24px;
@@ -110,7 +108,7 @@ export default {
               
               <div class="column ai-image">
                   <h2>Imagen Generada por IA</h2>
-                  <img src="data:image/png;base64,${base64Encoded}" alt="AI Generated Image">
+                  <img src="data:image/png;base64,${base64}" alt="AI Generated Image">
               </div>
               
               <div class="column market-frame">

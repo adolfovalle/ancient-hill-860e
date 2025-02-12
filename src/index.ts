@@ -9,7 +9,12 @@ export default {
       inputs,
     );
 
-    const imageBase64 = Buffer.from(imageResponse).toString('base64');
+    // Convertir la imagen a base64 usando solo APIs web estándar
+    const bytes = new Uint8Array(await imageResponse.arrayBuffer());
+    const base64String = Array.from(bytes)
+      .map(byte => String.fromCharCode(byte))
+      .join('');
+    const base64Encoded = self.btoa(base64String);
 
     const html = `
       <!DOCTYPE html>
@@ -33,11 +38,13 @@ export default {
                   justify-content: space-between;
                   padding: 2rem;
                   gap: 2rem;
+                  flex-wrap: wrap;
               }
               
               .column {
                   flex: 1;
                   padding: 1rem;
+                  min-width: 300px;
               }
               
               .haiku {
@@ -61,16 +68,30 @@ export default {
                   color: white;
                   padding: 1rem;
                   text-align: center;
+                  margin-top: auto;
+              }
+              
+              .social-icons {
+                  display: flex;
+                  justify-content: center;
+                  gap: 1rem;
               }
               
               .social-icons a {
                   color: white;
-                  margin: 0 1rem;
-                  font-size: 1.5rem;
                   text-decoration: none;
+                  font-size: 24px;
+              }
+              
+              /* Iconos de redes sociales usando Unicode */
+              .icon {
+                  display: inline-block;
+                  width: 24px;
+                  height: 24px;
+                  line-height: 24px;
+                  text-align: center;
               }
           </style>
-          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
       </head>
       <body>
           <nav>
@@ -89,7 +110,7 @@ export default {
               
               <div class="column ai-image">
                   <h2>Imagen Generada por IA</h2>
-                  <img src="data:image/png;base64,${imageBase64}" alt="AI Generated Image">
+                  <img src="data:image/png;base64,${base64Encoded}" alt="AI Generated Image">
               </div>
               
               <div class="column market-frame">
@@ -100,10 +121,10 @@ export default {
           
           <footer>
               <div class="social-icons">
-                  <a href="#"><i class="fab fa-twitter"></i></a>
-                  <a href="#"><i class="fab fa-instagram"></i></a>
-                  <a href="#"><i class="fab fa-github"></i></a>
-                  <a href="#"><i class="fab fa-linkedin"></i></a>
+                  <a href="#" class="icon">🐦</a>
+                  <a href="#" class="icon">📸</a>
+                  <a href="#" class="icon">💻</a>
+                  <a href="#" class="icon">💼</a>
               </div>
           </footer>
       </body>
